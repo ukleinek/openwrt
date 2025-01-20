@@ -1,19 +1,19 @@
 --- a/src/dnsmasq.c
 +++ b/src/dnsmasq.c
-@@ -2021,6 +2021,10 @@ static void check_dns_listeners(time_t n
- 		  daemon->pipe_to_parent = pipefd[1];
- 		}
+@@ -2097,6 +2097,10 @@ static void do_tcp_connection(struct lis
+       daemon->pipe_to_parent = pipefd[1];
+     }
  
 +#ifdef HAVE_UBUS
-+	      drop_ubus_listeners();
++  drop_ubus_listeners();
 +#endif
 +
- 	      /* start with no upstream connections. */
- 	      for (s = daemon->servers; s; s = s->next)
- 		 s->tcpfd = -1; 
+   /* The connected socket inherits non-blocking
+      attribute from the listening socket. 
+      Reset that here. */
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
-@@ -1670,14 +1670,26 @@ void emit_dbus_signal(int action, struct
+@@ -1682,14 +1682,26 @@ void emit_dbus_signal(int action, struct
  
  /* ubus.c */
  #ifdef HAVE_UBUS
@@ -42,7 +42,7 @@
  /* ipset.c */
 --- a/src/forward.c
 +++ b/src/forward.c
-@@ -803,7 +803,7 @@ static size_t process_reply(struct dns_h
+@@ -728,7 +728,7 @@ static size_t process_reply(struct dns_h
  	  cache_secure = 0;
  	}
        
